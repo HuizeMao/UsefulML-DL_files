@@ -16,6 +16,9 @@ i=0
 for _file in onlyfiles:
     train_files.append(_file)
 
+#define size 
+target_X_size,target_Y_size,channels = (128,128,3)
+
 print("Files in train_files: %d" % len(train_files))
 
 channels = 3
@@ -28,16 +31,15 @@ for _file in train_files:
     try:
         img = load_img(folder + "/" + _file)  # this is a PIL image
         # Convert to Numpy Array
-        img.thumbnail((128,128), Image.ANTIALIAS)
         x = img_to_array(img)
-        x = x.reshape(128,128,3)
+        x = x.reshape(target_X_size,target_Y_size,channels)
         # Normalize
         images[i] = x
         i += 1
         if i % 250 == 0:
             print("%d images to array" % i)
-    except(ValueError,OSError):
-        pass
+    except(ValueError,OSError): #if can't convert one image, delete the spot for that image 
+        images = np.delete(images,-1,axis = 0)
 
 np.save("nomralhand_images.npy", images)
 print("All images to array!")
